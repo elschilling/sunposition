@@ -27,18 +27,18 @@ function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper
   locationFolder.close()
 
   const cameraFolder = gui.addFolder('Camera')
-  cameraFolder.add(controls, 'autoRotate').name('Girar')
+  cameraFolder.add(controls, 'autoRotate')
 
-  const timeFolder = gui.addFolder('Tempo')
-  timeFolder.add(params, 'minute', 0, 60, 1).onChange(() => sunPath.updateHour()).listen().name('Minuto')
-  timeFolder.add(params, 'hour', 0, 24, 1).onChange(() => sunPath.updateHour()).listen().name('Hora')
-  timeFolder.add(params, 'day', 1, 30, 1).onChange(() => sunPath.updateMonth()).listen().name('Dia')
-  timeFolder.add(params, 'month', 1, 12, 1).onChange(() => sunPath.updateMonth()).listen().name('Mês')
-  timeFolder.add(params, 'animateTime').name('Animar tempo')
+  const timeFolder = gui.addFolder('Time')
+  timeFolder.add(params, 'minute', 0, 60, 1).onChange(() => sunPath.updateHour()).listen()
+  timeFolder.add(params, 'hour', 0, 24, 1).onChange(() => sunPath.updateHour()).listen()
+  timeFolder.add(params, 'day', 1, 30, 1).onChange(() => sunPath.updateMonth()).listen()
+  timeFolder.add(params, 'month', 1, 12, 1).onChange(() => sunPath.updateMonth()).listen()
+  timeFolder.add(params, 'animateTime')
   
-  skyFolder.hide()
-  lightFolder.hide()
-  locationFolder.hide()
+  // skyFolder.hide()
+  // lightFolder.hide()
+  // locationFolder.hide()
 
 
 

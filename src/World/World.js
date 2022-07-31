@@ -23,10 +23,10 @@ const params = {
   hour: new Date().getHours(),
   day: new Date().getDate(),
   month: new Date().getMonth(),
-  latitude: -22.863933,
-  longitude: -47.012181,
+  latitude: -23.029396,
+  longitude: -46.974293,
   northOffset: 303,
-  radius: 32,
+  radius: 20,
   shadowBias: -0.00086
 }
 
@@ -93,10 +93,6 @@ class World {
     scene.add(house, birds)
     tl.to(birds.position, { duration: 60, delay: 1, x: 100, z: 120 })
 
-    const houseFolder = this.gui.addFolder('Maquete')
-    houseFolder.add(cobertura, 'visible').name('Cobertura')
-    houseFolder.add(pavSuperior, 'visible').name('Pav. Superior')
-    houseFolder.add(pavTerreo, 'visible').name('Pav. Térreo')
   }
 
   render() {
