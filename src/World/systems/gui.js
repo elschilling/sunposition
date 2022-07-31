@@ -30,8 +30,10 @@ function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper
   cameraFolder.add(controls, 'autoRotate').name('Girar')
 
   const timeFolder = gui.addFolder('Tempo')
+  timeFolder.add(params, 'minute', 0, 60, 1).onChange(() => sunPath.updateHour()).listen().name('Minuto')
   timeFolder.add(params, 'hour', 0, 24, 1).onChange(() => sunPath.updateHour()).listen().name('Hora')
-  timeFolder.add(params, 'month', 1, 12, 1).onChange(() => sunPath.updateMonth()).name('Mês')
+  timeFolder.add(params, 'day', 1, 30, 1).onChange(() => sunPath.updateMonth()).listen().name('Dia')
+  timeFolder.add(params, 'month', 1, 12, 1).onChange(() => sunPath.updateMonth()).listen().name('Mês')
   timeFolder.add(params, 'animateTime').name('Animar tempo')
   
   skyFolder.hide()

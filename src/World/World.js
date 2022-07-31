@@ -19,7 +19,9 @@ import gsap from 'gsap'
 
 const params = {
   animateTime: false,
+  minute: new Date().getMinutes(),
   hour: new Date().getHours(),
+  day: new Date().getDate(),
   month: new Date().getMonth(),
   latitude: -22.863933,
   longitude: -47.012181,

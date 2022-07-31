@@ -100,11 +100,13 @@ class SunPath {
 
   updateHour() {
     this.date = new Date(this.date).setHours(this.params.hour)
+    this.date = new Date(this.date).setMinutes(this.params.minute)
     this.updateSunPosition()
   }
 
   updateMonth() {
     this.date = new Date(this.date).setHours(this.params.hour)
+    this.date = new Date(this.date).setDate(this.params.day)
     this.date = new Date(this.date).setMonth(this.params.month - 1)
     this.updateSunPosition()
     this.drawSunDayPath()
@@ -152,11 +154,13 @@ class SunPath {
   tick(delta) {
     let date = new Date(this.date)
     let month = date.getMonth() + 1
-    this.timeText.innerHTML = 'Hora: ' + date.getHours() + ':' + date.getMinutes() + ' - Data: ' + date.getDate() + '/' + month
+    // this.timeText.innerHTML = 'Hora: ' + date.getHours() + ':' + date.getMinutes() + ' - Data: ' + date.getDate() + '/' + month
     if (this.params.animateTime) {
       let minutes = new Date(this.date).getMinutes()
       this.date = new Date(this.date).setMinutes(minutes + 100 * delta)
+      this.params.minute = new Date(this.date).getMinutes()
       this.params.hour = new Date(this.date).getHours()
+      this.params.day = new Date(this.date).getDate()
       this.params.month = new Date(this.date).getMonth()
       this.updateSunPosition()
       this.drawSunDayPath()
