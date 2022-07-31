@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+#scene-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: indianred;
+}
+
+.time {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
