@@ -152,7 +152,7 @@ class SunPath {
   tick(delta) {
     let date = new Date(this.date)
     let month = date.getMonth() + 1
-    this.timeText.innerHTML = date.getHours() + ':' + date.getMinutes() + '-' + date.getDate() + '/' + month
+    this.timeText.innerHTML = 'Hora: ' + date.getHours() + ':' + date.getMinutes() + ' - Data: ' + date.getDate() + '/' + month
     if (this.params.animateTime) {
       let minutes = new Date(this.date).getMinutes()
       this.date = new Date(this.date).setMinutes(minutes + 100 * delta)
