@@ -17,6 +17,7 @@ class Loop {
 
       // render a frame
       this.renderer.render(this.scene, this.camera);
+
     });
   }
 

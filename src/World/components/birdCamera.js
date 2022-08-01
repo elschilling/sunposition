@@ -1,6 +1,6 @@
 import { PerspectiveCamera } from 'three'
 
-function createCamera() {
+function createBirdCamera() {
   const camera = new PerspectiveCamera(
     40, // fov = Field Of View
     1, // aspect ratio (dummy value)
@@ -15,4 +15,4 @@ function createCamera() {
   return camera
 }
 
-export { createCamera }
+export { createBirdCamera }

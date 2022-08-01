@@ -1,10 +1,11 @@
 import { loadHouse } from './components/house/house.js'
 import { loadBirds } from './components/birds/birds.js'
-import { createCamera } from './components/camera.js'
+import { createBirdCamera } from './components/birdCamera.js'
+import { createFirstPersonCamera } from './components/firstPersonCamera.js'
 import { createBase } from './components/base.js'
 import { createLights } from './components/lights.js'
 import { createScene } from './components/scene.js'
-import { createDirectionalLightHelper, createShadowCameraHelper } from './components/helpers.js'
+import { createDirectionalLightHelper, createShadowCameraHelper, createAxesHelper } from './components/helpers.js'
 import { createSunSphere } from './components/sunSphere.js'
 
 import { createGUI } from './systems/gui.js'
@@ -14,6 +15,7 @@ import { Resizer } from './systems/Resizer.js'
 import { Loop } from './systems/Loop.js'
 import { SunPath } from './systems/SunPath.js'
 import { DynamicSky } from './systems/DynamicSky.js'
+import { createPlayer } from './systems/player.js'
 
 import gsap from 'gsap'
 
@@ -22,7 +24,7 @@ const params = {
   minute: new Date().getMinutes(),
   hour: new Date().getHours(),
   day: new Date().getDate(),
-  month: new Date().getMonth(),
+  month: new Date().getMonth() + 1,
   latitude: -23.029396,
   longitude: -46.974293,
   northOffset: 303,
@@ -38,25 +40,41 @@ const skyControl = {
   exposure: 6.99
 }
 
+const cameraControl = {
+  firstPerson() {
+    activeCamera = firstPersonCamera
+    loop.camera = firstPersonCamera
+    resizer.camera = firstPersonCamera
+    resizer.onResize()
+  },
+  birdView() {
+    activeCamera = birdCamera
+    loop.camera = birdCamera
+    resizer.camera = birdCamera
+    resizer.onResize()
+  }
+}
+
 let tl = gsap.timeline({ repeta: -1 })
 
-
-// These variables are module-scoped: we cannot access them
-// from outside the module
-let camera
+let activeCamera, birdCamera, firstPersonCamera
 let renderer
 let scene
 let loop
 let controls
+let resizer
 
 class World {
   constructor(container) {
-    camera = createCamera()
+    birdCamera = createBirdCamera()
+    firstPersonCamera = createFirstPersonCamera()
+    activeCamera = birdCamera
+
     scene = createScene()
     renderer = createRenderer()
-    loop = new Loop(camera, scene, renderer)
+    loop = new Loop(activeCamera, scene, renderer)
     container.append(renderer.domElement)
-    controls = createControls(camera, renderer.domElement)
+    controls = createControls(activeCamera, renderer.domElement)
 
     const { ambientLight, sunLight } = createLights()
     sunLight.shadow.camera.top = params.radius
@@ -74,30 +92,27 @@ class World {
         
     const sunHelper = createDirectionalLightHelper(sunLight)
     const sunShadowHelper = createShadowCameraHelper(sunLight)
+    // const axesHelper = createAxesHelper(30)
     sunShadowHelper.visible = false
     
     loop.updatables.push(base, controls, sunPath, sky)
     
     scene.add(sky.sky, ambientLight, sunHelper, sunShadowHelper, sunPath.sunPathLight )
 
-    this.gui = createGUI(params, ambientLight, sunLight, sunHelper, sunShadowHelper, sunPath, controls, skyControl)
-    const resizer = new Resizer(container, camera, renderer)
+    this.gui = createGUI(params, ambientLight, sunLight, sunHelper, sunShadowHelper, sunPath, controls, skyControl, cameraControl)
+    resizer = new Resizer(container, activeCamera, renderer)
   }
 
   async init() {
-    const { house, cobertura, pavSuperior, pavTerreo } = await loadHouse()
+    const { house } = await loadHouse()
     const birds = await loadBirds()
     for (var b = 0; b < birds.children.length; b++) {
       loop.updatables.push(birds.children[b])
     }
     scene.add(house, birds)
     tl.to(birds.position, { duration: 60, delay: 1, x: 100, z: 120 })
-
-  }
-
-  render() {
-    // draw a single frame
-    renderer.render(scene, camera)
+    const player = createPlayer(firstPersonCamera, house)
+    loop.updatables.push(player)
   }
 
   start() {

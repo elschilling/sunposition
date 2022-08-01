@@ -1,6 +1,6 @@
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
 
-function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper, sunPath, controls, skyControl) {
+function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper, sunPath, controls, skyControl, cameraControl) {
   const gui = new GUI()
 
   const skyFolder = gui.addFolder('Sky')
@@ -28,6 +28,8 @@ function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper
 
   const cameraFolder = gui.addFolder('Camera')
   cameraFolder.add(controls, 'autoRotate')
+  cameraFolder.add(cameraControl, 'firstPerson')
+  cameraFolder.add(cameraControl, 'birdView')
 
   const timeFolder = gui.addFolder('Time')
   timeFolder.add(params, 'minute', 0, 60, 1).onChange(() => sunPath.updateHour()).listen()
