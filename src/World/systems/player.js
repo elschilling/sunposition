@@ -7,7 +7,7 @@ function createPlayer(camera, geometry) {
   const STEPS_PER_FRAME = 5;
 
   const worldOctree = new Octree();
-	const playerCollider = new Capsule( new Vector3( 0, 1.35, 15 ), new Vector3( 0, 2.8, 15 ), 0.35 );
+	const playerCollider = new Capsule( new Vector3( 0, 1.35, 15 ), new Vector3( 0, 2.8, 15 ), 0.25 );
   
   const playerVelocity = new Vector3();
   const playerDirection = new Vector3();
