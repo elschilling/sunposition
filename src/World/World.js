@@ -20,7 +20,10 @@ import { createPlayer } from './systems/player.js'
 import gsap from 'gsap'
 
 const params = {
-  animateTime: false,
+  animateTime: true,
+  showSunSurface: true,
+  showAnalemmas: true,
+  showSunDayPath: true,
   minute: new Date().getMinutes(),
   hour: new Date().getHours(),
   day: new Date().getDate(),
@@ -28,7 +31,9 @@ const params = {
   latitude: -23.029396,
   longitude: -46.974293,
   northOffset: 303,
-  radius: 20,
+  radius: 18,
+  baseY: 0,
+  timeSpeed: 100,
   shadowBias: -0.00086
 }
 
@@ -85,7 +90,7 @@ class World {
 
     const sunSphere = createSunSphere()
     
-    const base = createBase(params.radius)
+    const base = createBase(params)
     const sunPath = new SunPath(params, sunSphere, sunLight, base)
 
     const sky = new DynamicSky(skyControl, sunPath.sphereLight, renderer)

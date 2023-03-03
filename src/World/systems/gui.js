@@ -2,6 +2,7 @@ import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
 
 function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper, sunPath, controls, skyControl, cameraControl) {
   const gui = new GUI()
+  gui.close()
 
   const skyFolder = gui.addFolder('Sky')
   skyFolder.add( skyControl, 'turbidity', 0.0, 20.0, 0.1 )
@@ -26,10 +27,12 @@ function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper
   locationFolder.add(params, 'northOffset').onChange(() => sunPath.updateNorth())
   locationFolder.close()
 
+
   const cameraFolder = gui.addFolder('Camera')
   cameraFolder.add(controls, 'autoRotate')
   cameraFolder.add(cameraControl, 'firstPerson')
   cameraFolder.add(cameraControl, 'birdView')
+  cameraFolder.close()
 
   const timeFolder = gui.addFolder('Time')
   timeFolder.add(params, 'minute', 0, 60, 1).onChange(() => sunPath.updateHour()).listen()
@@ -37,12 +40,20 @@ function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper
   timeFolder.add(params, 'day', 1, 30, 1).onChange(() => sunPath.updateMonth()).listen()
   timeFolder.add(params, 'month', 1, 12, 1).onChange(() => sunPath.updateMonth()).listen()
   timeFolder.add(params, 'animateTime')
-  
+  timeFolder.add(params, 'timeSpeed').min(0).max(10000).step(.1)
+  timeFolder.close()
+
+  const sunsurfaceFolder = gui.addFolder('Sun Surface')
+  sunsurfaceFolder.add(params, 'showSunSurface').onChange(() => sunPath.updateLocation())
+  sunsurfaceFolder.add(params, 'showAnalemmas').onChange(() => sunPath.updateLocation())
+  sunsurfaceFolder.add(params, 'showSunDayPath').onChange(() => sunPath.updateLocation())
+  sunsurfaceFolder.add(sunPath.sunPathLight.children[0].children[0], 'visible', ).name('Sun Sphere')
+  sunsurfaceFolder.add(sunPath.sunPathLight.children[1], 'visible', ).name('Orientation')
+  sunsurfaceFolder.close()
+
   // skyFolder.hide()
   // lightFolder.hide()
   // locationFolder.hide()
-
-
 
   return gui
 }

@@ -29,73 +29,83 @@ class SunPath {
   }
 
   drawAnalemmas() {
-    let analemmaPath = this.sunPathLight.getObjectByName('analemmaPath')
-    this.sunPathLight.remove(analemmaPath)
-    let analemmas = new Group()
-    for (let h = 7; h < 18; h++) {
-      let vertices = []
-      let from = new Date(2022,0,1)
-      let to = new Date(2023,0,1)
-      for (let d = from; d < to; d.setDate(d.getDate() + 1)) {
-        let date = new Date(d).setHours(h)
-        let sunPosition = this.getSunPosition(date)
-        vertices.push(sunPosition.x, sunPosition.y, sunPosition.z)
+    if (this.params.showAnalemmas) {
+      let analemmaPath = this.sunPathLight.getObjectByName('analemmaPath')
+      this.sunPathLight.remove(analemmaPath)
+      let analemmas = new Group()
+      for (let h = 7; h < 18; h++) {
+        let vertices = []
+        let from = new Date(2022,0,1)
+        let to = new Date(2023,0,1)
+        for (let d = from; d < to; d.setDate(d.getDate() + 1)) {
+          let date = new Date(d).setHours(h)
+          let sunPosition = this.getSunPosition(date)
+          vertices.push(sunPosition.x, sunPosition.y, sunPosition.z)
+        }
+        let geometry = new BufferGeometry()
+        let analemmaMaterial = new LineDashedMaterial({
+          color: 'yellow',
+          linewidth: 1,
+          scale: 10,
+          dashSize: 6,
+          gapSize: 3,
+          transparent: true,
+          opacity: 0.7
+        })
+        geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3))
+        let analemma = new LineLoop(geometry, analemmaMaterial)
+        analemma.computeLineDistances()
+        analemmas.add(analemma)
+        analemmas.name = 'analemmaPath'
       }
-      let geometry = new BufferGeometry()
-      let analemmaMaterial = new LineDashedMaterial({
-        color: 'yellow',
-        linewidth: 1,
-        scale: 10,
-        dashSize: 6,
-        gapSize: 3,
-        transparent: true,
-        opacity: 0.7
-      })
-      geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3))
-      let analemma = new LineLoop(geometry, analemmaMaterial)
-      analemma.computeLineDistances()
-      analemmas.add(analemma)
-      analemmas.name = 'analemmaPath'
+      this.sunPathLight.add(analemmas)
+    } else {
+      let analemmaPath = this.sunPathLight.getObjectByName('analemmaPath')
+      this.sunPathLight.remove(analemmaPath)
     }
-    this.sunPathLight.add(analemmas)
   }
 
   drawSunSurface() {
-    let sunSurface = this.sunPathLight.getObjectByName('sunSurface')
-    this.sunPathLight.remove(sunSurface)
-    let vertices = []
-    for (let m = 0; m < 6; m++) {
-      let date = new Date('2022-01-01T00:00:00')
-      for (let h = 0; h < 24; h++) {
-        date = new Date(date).setMonth(m)
-        date = new Date(date).setHours(h)
-        let sunPosition = this.getSunPosition(date)
-        vertices.push(sunPosition.x, sunPosition.y, sunPosition.z)
-        date = new Date(date).setHours(h+1)
-        let sunPosition2 = this.getSunPosition(date)
-        vertices.push(sunPosition2.x, sunPosition2.y, sunPosition2.z)
-        date = new Date(date).setMonth(m+1)
-        date = new Date(date).setHours(h)
-        let sunPosition3 = this.getSunPosition(date)
-        vertices.push(sunPosition3.x, sunPosition3.y, sunPosition3.z)
-        vertices.push(sunPosition3.x, sunPosition3.y, sunPosition3.z)
-        vertices.push(sunPosition2.x, sunPosition2.y, sunPosition2.z)
-        date = new Date(date).setHours(h+1)
-        let sunPosition4 = this.getSunPosition(date)
-        vertices.push(sunPosition4.x, sunPosition4.y, sunPosition4.z)
+    if (this.params.showSunSurface) {
+      let sunSurface = this.sunPathLight.getObjectByName('sunSurface')
+      this.sunPathLight.remove(sunSurface)
+      let vertices = []
+      for (let m = 0; m < 6; m++) {
+        let date = new Date('2022-01-01T00:00:00')
+        for (let h = 0; h < 24; h++) {
+          date = new Date(date).setMonth(m)
+          date = new Date(date).setHours(h)
+          let sunPosition = this.getSunPosition(date)
+          vertices.push(sunPosition.x, sunPosition.y, sunPosition.z)
+          date = new Date(date).setHours(h+1)
+          let sunPosition2 = this.getSunPosition(date)
+          vertices.push(sunPosition2.x, sunPosition2.y, sunPosition2.z)
+          date = new Date(date).setMonth(m+1)
+          date = new Date(date).setHours(h)
+          let sunPosition3 = this.getSunPosition(date)
+          vertices.push(sunPosition3.x, sunPosition3.y, sunPosition3.z)
+          vertices.push(sunPosition3.x, sunPosition3.y, sunPosition3.z)
+          vertices.push(sunPosition2.x, sunPosition2.y, sunPosition2.z)
+          date = new Date(date).setHours(h+1)
+          let sunPosition4 = this.getSunPosition(date)
+          vertices.push(sunPosition4.x, sunPosition4.y, sunPosition4.z)
+        }
       }
+      let surfaceGeometry = new BufferGeometry()
+      let surfaceMaterial = new MeshBasicMaterial({
+        color: 'yellow',
+        side: DoubleSide,
+        transparent: true,
+        opacity: 0.1
+      })
+      surfaceGeometry.setAttribute('position', new Float32BufferAttribute(vertices, 3))
+      let surfaceMesh = new Mesh(surfaceGeometry, surfaceMaterial)
+      surfaceMesh.name = 'sunSurface'
+      this.sunPathLight.add(surfaceMesh)
+    } else {
+      let sunSurface = this.sunPathLight.getObjectByName('sunSurface')
+      this.sunPathLight.remove(sunSurface)
     }
-    let surfaceGeometry = new BufferGeometry()
-    let surfaceMaterial = new MeshBasicMaterial({
-      color: 'yellow',
-      side: DoubleSide,
-      transparent: true,
-      opacity: 0.1
-    })
-    surfaceGeometry.setAttribute('position', new Float32BufferAttribute(vertices, 3))
-    let surfaceMesh = new Mesh(surfaceGeometry, surfaceMaterial)
-    surfaceMesh.name = 'sunSurface'
-    this.sunPathLight.add(surfaceMesh)
   }
 
   updateHour() {
@@ -130,34 +140,38 @@ class SunPath {
   }
 
   drawSunDayPath() {
-    let dayPath = this.sunPathLight.getObjectByName('dayPath')
-    this.sunPathLight.remove(dayPath)
-    let pathMaterial = new LineBasicMaterial({
-      color: 'red',
-      linewidth: 5,
-      transparent: true,
-      opacity: 0.5
-    })
-    let geometry = new BufferGeometry()
-    let positions = []
-    for (let h = 0; h < 24; h++) {
-      let date = new Date(this.date).setHours(h)
-      let sunPosition = this.getSunPosition(date)
-      positions.push(sunPosition.x, sunPosition.y, sunPosition.z)
+    if (this.params.showSunDayPath) {
+      let dayPath = this.sunPathLight.getObjectByName('dayPath')
+      this.sunPathLight.remove(dayPath)
+      let pathMaterial = new LineBasicMaterial({
+        color: 'red',
+        linewidth: 5,
+        transparent: true,
+        opacity: 0.5
+      })
+      let geometry = new BufferGeometry()
+      let positions = []
+      for (let h = 0; h < 24; h++) {
+        let date = new Date(this.date).setHours(h)
+        let sunPosition = this.getSunPosition(date)
+        positions.push(sunPosition.x, sunPosition.y, sunPosition.z)
+      }
+      geometry.setAttribute('position', new Float32BufferAttribute(positions, 3))
+      let path = new LineLoop(geometry, pathMaterial)
+      path.name = 'dayPath'
+      this.sunPathLight.add(path)
+    } else {
+      let dayPath = this.sunPathLight.getObjectByName('dayPath')
+      this.sunPathLight.remove(dayPath)
     }
-    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3))
-    let path = new LineLoop(geometry, pathMaterial)
-    path.name = 'dayPath'
-    this.sunPathLight.add(path)
   }
 
   tick(delta) {
     let date = new Date(this.date)
-    let month = date.getMonth() + 1
     // this.timeText.innerHTML = 'Hora: ' + date.getHours() + ':' + date.getMinutes() + ' - Data: ' + date.getDate() + '/' + month
     if (this.params.animateTime) {
-      let minutes = new Date(this.date).getMinutes()
-      this.date = new Date(this.date).setMinutes(minutes + 100 * delta)
+      let time = new Date(this.date).getTime()
+      this.date = new Date(this.date).setTime(time + delta * 1000 * this.params.timeSpeed)
       this.params.minute = new Date(this.date).getMinutes()
       this.params.hour = new Date(this.date).getHours()
       this.params.day = new Date(this.date).getDate()
