@@ -5,7 +5,7 @@ function createSunSphere() {
     new SphereGeometry(),
     new MeshBasicMaterial({ color: 'yellow' })
   )
-  sunSphere.visible = false
+  sunSphere.visible = true
   return sunSphere
 }
 

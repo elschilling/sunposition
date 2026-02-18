@@ -10,13 +10,13 @@ function createPostProcessing(scene, camera, renderer) {
     const renderPass = new RenderPass(scene, camera)
     composer.addPass(renderPass)
 
-    // SSGI (Screen Space Global Illumination) pass
-    const ssgiPass = new SSAOPass(scene, camera, renderer.domElement.width, renderer.domElement.height)
-    ssgiPass.kernelRadius = 3
-    ssgiPass.minDistance = 0.0008
-    ssgiPass.maxDistance = 0.1
-    ssgiPass.output = SSAOPass.OUTPUT.Default
-    composer.addPass(ssgiPass)
+    // SSAO (Screen Space Ambient Occlusion) pass
+    const ssaoPass = new SSAOPass(scene, camera, renderer.domElement.width, renderer.domElement.height)
+    ssaoPass.kernelRadius = 16
+    ssaoPass.minDistance = 0.005
+    ssaoPass.maxDistance = 0.1
+    ssaoPass.output = SSAOPass.OUTPUT.Default
+    composer.addPass(ssaoPass)
 
     // Output pass for color space handling
     const outputPass = new OutputPass()
@@ -24,16 +24,16 @@ function createPostProcessing(scene, camera, renderer) {
 
     return {
         composer,
-        ssgiPass,
+        ssaoPass,
         renderPass,
         outputPass,
         updateSize(width, height) {
             composer.setSize(width, height)
-            ssgiPass.setSize(width, height)
+            ssaoPass.setSize(width, height)
         },
         setCamera(camera) {
             renderPass.camera = camera
-            ssgiPass.camera = camera
+            ssaoPass.camera = camera
         }
     }
 }

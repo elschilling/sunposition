@@ -54,27 +54,30 @@ function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper
   // SSGI Controls
   if (postProcessing) {
     const ssgiFolder = gui.addFolder('SSGI (Screen Space GI)')
-    const ssgiPass = postProcessing.ssgiPass
+    const ssgiPass = postProcessing.ssgiPass || postProcessing.ssaoPass
 
     // Create a proxy object for SSGI parameters
     const ssgiParams = {
-      enabled: ssgiPass.enabled,
-      kernelRadius: ssgiPass.kernelRadius,
-      minDistance: ssgiPass.minDistance,
-      maxDistance: ssgiPass.maxDistance
+      enabled: ssgiPass ? ssgiPass.enabled : false,
+      kernelRadius: ssgiPass ? (ssgiPass.kernelRadius || ssgiPass.radius) : 16,
+      minDistance: ssgiPass ? (ssgiPass.minDistance || 0.005) : 0.005,
+      maxDistance: ssgiPass ? (ssgiPass.maxDistance || 0.1) : 0.1
     }
 
     ssgiFolder.add(ssgiParams, 'enabled').name('Enabled').onChange((value) => {
-      ssgiPass.enabled = value
+      if (ssgiPass) ssgiPass.enabled = value
     })
     ssgiFolder.add(ssgiParams, 'kernelRadius').min(0).max(64).step(1).name('Kernel Radius').onChange((value) => {
-      ssgiPass.kernelRadius = value
+      if (ssgiPass) {
+        if (ssgiPass.kernelRadius !== undefined) ssgiPass.kernelRadius = value
+        if (ssgiPass.radius !== undefined) ssgiPass.radius = value
+      }
     })
     ssgiFolder.add(ssgiParams, 'minDistance').min(0.0001).max(0.01).step(0.0001).name('Min Distance').onChange((value) => {
-      ssgiPass.minDistance = value
+      if (ssgiPass && ssgiPass.minDistance) ssgiPass.minDistance = value
     })
     ssgiFolder.add(ssgiParams, 'maxDistance').min(0.01).max(1).step(0.01).name('Max Distance').onChange((value) => {
-      ssgiPass.maxDistance = value
+      if (ssgiPass && ssgiPass.maxDistance) ssgiPass.maxDistance = value
     })
     ssgiFolder.close()
   }
