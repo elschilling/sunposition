@@ -1,11 +1,11 @@
-import { Mesh, MeshBasicMaterial, SphereBufferGeometry } from "three"
+import { Mesh, MeshBasicMaterial, SphereGeometry } from "three"
 
 function createSunSphere() {
   const sunSphere = new Mesh(
-    new SphereBufferGeometry(),
+    new SphereGeometry(),
     new MeshBasicMaterial({ color: 'yellow' })
   )
-  // sunSphere.position.y = 30
+  sunSphere.visible = false
   return sunSphere
 }
 

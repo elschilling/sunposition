@@ -1,15 +1,15 @@
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
 
-function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper, sunPath, controls, skyControl, cameraControl) {
+function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper, sunPath, controls, skyControl, cameraControl, postProcessing = null) {
   const gui = new GUI()
   gui.close()
 
   const skyFolder = gui.addFolder('Sky')
-  skyFolder.add( skyControl, 'turbidity', 0.0, 20.0, 0.1 )
-  skyFolder.add( skyControl, 'rayleigh', 0.0, 4, 0.001 )
-  skyFolder.add( skyControl, 'mieCoefficient', 0.0, 0.1, 0.001 )
-  skyFolder.add( skyControl, 'mieDirectionalG', 0.0, 1, 0.001 )
-  skyFolder.add( skyControl, 'exposure', 0, 10, 0.001 )
+  skyFolder.add(skyControl, 'turbidity', 0.0, 20.0, 0.1)
+  skyFolder.add(skyControl, 'rayleigh', 0.0, 4, 0.001)
+  skyFolder.add(skyControl, 'mieCoefficient', 0.0, 0.1, 0.001)
+  skyFolder.add(skyControl, 'mieDirectionalG', 0.0, 1, 0.001)
+  skyFolder.add(skyControl, 'exposure', 0, 10, 0.001)
   skyFolder.close()
 
   const lightFolder = gui.addFolder('Light')
@@ -47,9 +47,43 @@ function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper
   sunsurfaceFolder.add(params, 'showSunSurface').onChange(() => sunPath.updateLocation())
   sunsurfaceFolder.add(params, 'showAnalemmas').onChange(() => sunPath.updateLocation())
   sunsurfaceFolder.add(params, 'showSunDayPath').onChange(() => sunPath.updateLocation())
-  sunsurfaceFolder.add(sunPath.sunPathLight.children[0].children[0], 'visible', ).name('Sun Sphere')
-  sunsurfaceFolder.add(sunPath.sunPathLight.children[1], 'visible', ).name('Orientation')
+  sunsurfaceFolder.add(sunPath.sunPathLight.children[0].children[0], 'visible',).name('Sun Sphere')
+  sunsurfaceFolder.add(sunPath.sunPathLight.children[1], 'visible',).name('Orientation')
   sunsurfaceFolder.close()
+
+  // GTAO Controls
+  if (postProcessing) {
+    const gtaoFolder = gui.addFolder('GTAO (Ambient Occlusion)')
+    const gtaoPass = postProcessing.gtaoPass
+
+    // Create a proxy object for GTAO parameters
+    const gtaoParams = {
+      enabled: gtaoPass.enabled,
+      radius: 5.0,
+      intensity: 1.0,
+      lumInfluence: 0.9
+    }
+
+    gtaoFolder.add(gtaoParams, 'enabled').name('Enabled').onChange((value) => {
+      gtaoPass.enabled = value
+    })
+    gtaoFolder.add(gtaoParams, 'radius').min(0.1).max(20).step(0.1).name('Radius').onChange((value) => {
+      if (gtaoPass.params) {
+        gtaoPass.params.radius = value
+      }
+    })
+    gtaoFolder.add(gtaoParams, 'intensity').min(0).max(5).step(0.1).name('Intensity').onChange((value) => {
+      if (gtaoPass.params) {
+        gtaoPass.params.intensity = value
+      }
+    })
+    gtaoFolder.add(gtaoParams, 'lumInfluence').min(0).max(2).step(0.1).name('Lum Influence').onChange((value) => {
+      if (gtaoPass.params) {
+        gtaoPass.params.lumInfluence = value
+      }
+    })
+    gtaoFolder.close()
+  }
 
   // skyFolder.hide()
   // lightFolder.hide()

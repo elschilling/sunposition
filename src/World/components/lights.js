@@ -5,7 +5,7 @@ function createLights() {
   const sunLight = new DirectionalLight('white', 8);
   sunLight.castShadow = true
   sunLight.shadow.bias = -0.005
-  let mapSize = 1
+  let mapSize = 2
   sunLight.shadow.mapSize.set(1024 * mapSize, 1024 * mapSize)
 
   // move the light right, up, and towards us

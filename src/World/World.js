@@ -11,6 +11,7 @@ import { createSunSphere } from './components/sunSphere.js'
 import { createGUI } from './systems/gui.js'
 import { createControls } from './systems/controls.js'
 import { createRenderer } from './systems/renderer.js'
+import { createPostProcessing } from './systems/PostProcessing.js'
 import { Resizer } from './systems/Resizer.js'
 import { Loop } from './systems/Loop.js'
 import { SunPath } from './systems/SunPath.js'
@@ -34,7 +35,7 @@ const params = {
   radius: 18,
   baseY: 0,
   timeSpeed: 100,
-  shadowBias: -0.00086
+  shadowBias: -0.00037
 }
 
 const skyControl = {
@@ -42,7 +43,7 @@ const skyControl = {
   rayleigh: 0.425,
   mieCoefficient: 0.012,
   mieDirectionalG: 1,
-  exposure: 6.99
+  exposure: 2.3
 }
 
 const cameraControl = {
@@ -50,12 +51,14 @@ const cameraControl = {
     activeCamera = firstPersonCamera
     loop.camera = firstPersonCamera
     resizer.camera = firstPersonCamera
+    postProcessing.setCamera(firstPersonCamera)
     resizer.onResize()
   },
   birdView() {
     activeCamera = birdCamera
     loop.camera = birdCamera
     resizer.camera = birdCamera
+    postProcessing.setCamera(birdCamera)
     resizer.onResize()
   }
 }
@@ -63,7 +66,7 @@ const cameraControl = {
 let tl = gsap.timeline({ repeta: -1 })
 
 let activeCamera, birdCamera, firstPersonCamera
-let renderer
+let renderer, postProcessing
 let scene
 let loop
 let controls
@@ -77,7 +80,8 @@ class World {
 
     scene = createScene()
     renderer = createRenderer()
-    loop = new Loop(activeCamera, scene, renderer)
+    postProcessing = createPostProcessing(scene, activeCamera, renderer)
+    loop = new Loop(activeCamera, scene, renderer, postProcessing.composer)
     container.append(renderer.domElement)
     controls = createControls(activeCamera, renderer.domElement)
 
@@ -89,23 +93,28 @@ class World {
     sunLight.shadow.bias = params.shadowBias
 
     const sunSphere = createSunSphere()
-    
+
     const base = createBase(params)
     const sunPath = new SunPath(params, sunSphere, sunLight, base)
 
     const sky = new DynamicSky(skyControl, sunPath.sphereLight, renderer)
-        
+
     const sunHelper = createDirectionalLightHelper(sunLight)
+    sunHelper.visible = true
+
     const sunShadowHelper = createShadowCameraHelper(sunLight)
     // const axesHelper = createAxesHelper(30)
     sunShadowHelper.visible = false
-    
-    loop.updatables.push(base, controls, sunPath, sky)
-    
-    scene.add(sky.sky, ambientLight, sunHelper, sunShadowHelper, sunPath.sunPathLight )
 
-    this.gui = createGUI(params, ambientLight, sunLight, sunHelper, sunShadowHelper, sunPath, controls, skyControl, cameraControl)
-    resizer = new Resizer(container, activeCamera, renderer)
+    loop.updatables.push(base, controls, sunPath, sky)
+
+    scene.add(sky.sky, ambientLight, sunHelper, sunShadowHelper, sunPath.sunPathLight)
+
+    // Set objects to exclude from GTAO (sun path visualization)
+    loop.setGTAOExcludeObjects([sunPath.sunPathLight])
+
+    this.gui = createGUI(params, ambientLight, sunLight, sunHelper, sunShadowHelper, sunPath, controls, skyControl, cameraControl, postProcessing)
+    resizer = new Resizer(container, activeCamera, renderer, postProcessing)
   }
 
   async init() {
@@ -123,7 +132,7 @@ class World {
   start() {
     loop.start()
   }
-  
+
   stop() {
     loop.stop()
   }

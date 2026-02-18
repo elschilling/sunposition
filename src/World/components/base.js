@@ -1,6 +1,6 @@
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
-import { 
+import {
   BufferGeometry,
   Float32BufferAttribute,
   CylinderGeometry,
@@ -8,11 +8,11 @@ import {
   MeshStandardMaterial,
   MeshBasicMaterial,
   MathUtils
- } from 'three';
+} from 'three';
 
 function createBase(params) {
   // Cylinder base
-  const geometry = new CylinderGeometry(params.radius-1, params.radius-1, 2, 180);
+  const geometry = new CylinderGeometry(params.radius - 1, params.radius - 1, 2, 180);
   const material = new MeshStandardMaterial({ color: 'black' });
   const base = new Mesh(geometry, material);
   base.position.y = params.baseY
@@ -26,36 +26,36 @@ function createBase(params) {
     let textGeometry = new TextGeometry('N', {
       font: font,
       size: 3,
-      height: 0.3,
-  
+      depth: 0.3,
+
     })
     let text = new Mesh(textGeometry, fontMaterial)
-    text.rotation.x = - Math.PI/2
-    text.rotation.z = - Math.PI/2
+    text.rotation.x = - Math.PI / 2
+    text.rotation.z = - Math.PI / 2
     text.position.x = - params.radius - 8
     textGeometry.computeBoundingBox()
     text.position.z = - (textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y) / 2
     base.add(text)
-    textGeometry = new TextGeometry('S', { font, size: 3, height: 0.3 })
+    textGeometry = new TextGeometry('S', { font, size: 3, depth: 0.3 })
     text = new Mesh(textGeometry, fontMaterial)
     text.position.x = params.radius + 4
-    text.rotation.x = - Math.PI/2
-    text.rotation.z = - Math.PI/2
+    text.rotation.x = - Math.PI / 2
+    text.rotation.z = - Math.PI / 2
     textGeometry.computeBoundingBox()
     text.position.z = - (textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y) / 2
     base.add(text)
-    textGeometry = new TextGeometry('L', { font, size: 3, height: 0.3 })
+    textGeometry = new TextGeometry('L', { font, size: 3, depth: 0.3 })
     text = new Mesh(textGeometry, fontMaterial)
     text.position.z = - params.radius - 6
-    text.rotation.x = - Math.PI/2
+    text.rotation.x = - Math.PI / 2
     textGeometry.computeBoundingBox()
     text.position.x = - (textGeometry.boundingBox.max.y - textGeometry.boundingBox.min.y) / 2
     // text.rotation.z = - Math.PI/2
     base.add(text)
-    textGeometry = new TextGeometry('O', { font, size: 3, height: 0.3 })
+    textGeometry = new TextGeometry('O', { font, size: 3, depth: 0.3 })
     text = new Mesh(textGeometry, fontMaterial)
     text.position.z = params.radius + 8
-    text.rotation.x = - Math.PI/2 
+    text.rotation.x = - Math.PI / 2
     base.add(text)
   })
 
@@ -75,11 +75,11 @@ function createBase(params) {
   arrowS.rotation.y = Math.PI
   arrowS.position.x = params.radius - 2
   const arrowL = arrowN.clone()
-  arrowL.rotation.y = - Math.PI/2
+  arrowL.rotation.y = - Math.PI / 2
   arrowL.position.z = - params.radius + 2
   arrowL.position.x = 0
   const arrowO = arrowL.clone()
-  arrowO.rotation.y = Math.PI/2
+  arrowO.rotation.y = Math.PI / 2
   arrowO.position.z = params.radius - 2
   arrowO.position.x = 0
 

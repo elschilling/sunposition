@@ -5,7 +5,7 @@ import { setupModel } from './setupModel'
 
 async function loadHouse() {
   const dracoLoader = new DRACOLoader()
-  dracoLoader.setDecoderPath('/draco/')
+  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
   const gltfLoader = new GLTFLoader()
   gltfLoader.setDRACOLoader(dracoLoader)
   const houseData = await gltfLoader.loadAsync('/assets/models/House-c.glb')

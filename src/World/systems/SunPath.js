@@ -35,8 +35,8 @@ class SunPath {
       let analemmas = new Group()
       for (let h = 7; h < 18; h++) {
         let vertices = []
-        let from = new Date(2022,0,1)
-        let to = new Date(2023,0,1)
+        let from = new Date(2022, 0, 1)
+        let to = new Date(2023, 0, 1)
         for (let d = from; d < to; d.setDate(d.getDate() + 1)) {
           let date = new Date(d).setHours(h)
           let sunPosition = this.getSunPosition(date)
@@ -77,16 +77,16 @@ class SunPath {
           date = new Date(date).setHours(h)
           let sunPosition = this.getSunPosition(date)
           vertices.push(sunPosition.x, sunPosition.y, sunPosition.z)
-          date = new Date(date).setHours(h+1)
+          date = new Date(date).setHours(h + 1)
           let sunPosition2 = this.getSunPosition(date)
           vertices.push(sunPosition2.x, sunPosition2.y, sunPosition2.z)
-          date = new Date(date).setMonth(m+1)
+          date = new Date(date).setMonth(m + 1)
           date = new Date(date).setHours(h)
           let sunPosition3 = this.getSunPosition(date)
           vertices.push(sunPosition3.x, sunPosition3.y, sunPosition3.z)
           vertices.push(sunPosition3.x, sunPosition3.y, sunPosition3.z)
           vertices.push(sunPosition2.x, sunPosition2.y, sunPosition2.z)
-          date = new Date(date).setHours(h+1)
+          date = new Date(date).setHours(h + 1)
           let sunPosition4 = this.getSunPosition(date)
           vertices.push(sunPosition4.x, sunPosition4.y, sunPosition4.z)
         }
@@ -96,7 +96,9 @@ class SunPath {
         color: 'yellow',
         side: DoubleSide,
         transparent: true,
-        opacity: 0.1
+        opacity: 0.1,
+        depthWrite: false,
+        depthTest: false
       })
       surfaceGeometry.setAttribute('position', new Float32BufferAttribute(vertices, 3))
       let surfaceMesh = new Mesh(surfaceGeometry, surfaceMaterial)
@@ -136,7 +138,7 @@ class SunPath {
   updateSunPosition() {
     let sunPosition = this.getSunPosition(this.date)
     this.sphereLight.position.set(sunPosition.x, sunPosition.y, sunPosition.z)
-    this.sunLight.lookAt(0,0,0)
+    this.sunLight.lookAt(0, 0, 0)
   }
 
   drawSunDayPath() {
