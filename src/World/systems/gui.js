@@ -51,38 +51,32 @@ function createGUI(params, ambientLight, sunLight, sunHelper, shadowCameraHelper
   sunsurfaceFolder.add(sunPath.sunPathLight.children[1], 'visible',).name('Orientation')
   sunsurfaceFolder.close()
 
-  // GTAO Controls
+  // SSGI Controls
   if (postProcessing) {
-    const gtaoFolder = gui.addFolder('GTAO (Ambient Occlusion)')
-    const gtaoPass = postProcessing.gtaoPass
+    const ssgiFolder = gui.addFolder('SSGI (Screen Space GI)')
+    const ssgiPass = postProcessing.ssgiPass
 
-    // Create a proxy object for GTAO parameters
-    const gtaoParams = {
-      enabled: gtaoPass.enabled,
-      radius: 5.0,
-      intensity: 1.0,
-      lumInfluence: 0.9
+    // Create a proxy object for SSGI parameters
+    const ssgiParams = {
+      enabled: ssgiPass.enabled,
+      kernelRadius: ssgiPass.kernelRadius,
+      minDistance: ssgiPass.minDistance,
+      maxDistance: ssgiPass.maxDistance
     }
 
-    gtaoFolder.add(gtaoParams, 'enabled').name('Enabled').onChange((value) => {
-      gtaoPass.enabled = value
+    ssgiFolder.add(ssgiParams, 'enabled').name('Enabled').onChange((value) => {
+      ssgiPass.enabled = value
     })
-    gtaoFolder.add(gtaoParams, 'radius').min(0.1).max(20).step(0.1).name('Radius').onChange((value) => {
-      if (gtaoPass.params) {
-        gtaoPass.params.radius = value
-      }
+    ssgiFolder.add(ssgiParams, 'kernelRadius').min(0).max(64).step(1).name('Kernel Radius').onChange((value) => {
+      ssgiPass.kernelRadius = value
     })
-    gtaoFolder.add(gtaoParams, 'intensity').min(0).max(5).step(0.1).name('Intensity').onChange((value) => {
-      if (gtaoPass.params) {
-        gtaoPass.params.intensity = value
-      }
+    ssgiFolder.add(ssgiParams, 'minDistance').min(0.0001).max(0.01).step(0.0001).name('Min Distance').onChange((value) => {
+      ssgiPass.minDistance = value
     })
-    gtaoFolder.add(gtaoParams, 'lumInfluence').min(0).max(2).step(0.1).name('Lum Influence').onChange((value) => {
-      if (gtaoPass.params) {
-        gtaoPass.params.lumInfluence = value
-      }
+    ssgiFolder.add(ssgiParams, 'maxDistance').min(0.01).max(1).step(0.01).name('Max Distance').onChange((value) => {
+      ssgiPass.maxDistance = value
     })
-    gtaoFolder.close()
+    ssgiFolder.close()
   }
 
   // skyFolder.hide()

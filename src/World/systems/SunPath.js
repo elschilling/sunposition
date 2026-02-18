@@ -97,8 +97,6 @@ class SunPath {
         side: DoubleSide,
         transparent: true,
         opacity: 0.1,
-        depthWrite: false,
-        depthTest: false
       })
       surfaceGeometry.setAttribute('position', new Float32BufferAttribute(vertices, 3))
       let surfaceMesh = new Mesh(surfaceGeometry, surfaceMaterial)

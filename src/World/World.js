@@ -110,9 +110,6 @@ class World {
 
     scene.add(sky.sky, ambientLight, sunHelper, sunShadowHelper, sunPath.sunPathLight)
 
-    // Set objects to exclude from GTAO (sun path visualization)
-    loop.setGTAOExcludeObjects([sunPath.sunPathLight])
-
     this.gui = createGUI(params, ambientLight, sunLight, sunHelper, sunShadowHelper, sunPath, controls, skyControl, cameraControl, postProcessing)
     resizer = new Resizer(container, activeCamera, renderer, postProcessing)
   }

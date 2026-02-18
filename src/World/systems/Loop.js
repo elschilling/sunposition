@@ -9,11 +9,6 @@ class Loop {
     this.renderer = renderer;
     this.composer = composer;
     this.updatables = [];
-    this.gtaoExcludeObjects = [];
-  }
-
-  setGTAOExcludeObjects(objects) {
-    this.gtaoExcludeObjects = objects;
   }
 
   start() {
@@ -23,43 +18,12 @@ class Loop {
 
       // render a frame
       if (this.composer) {
-        this.renderWithGTAO();
+        this.composer.render();
       } else {
         this.renderer.render(this.scene, this.camera);
       }
 
     });
-  }
-
-  renderWithGTAO() {
-    // Find GTAO pass
-    const gtaoPass = this.composer.passes.find(p => p.isGTAOPass);
-
-    if (!gtaoPass || !gtaoPass.enabled) {
-      this.composer.render();
-      return;
-    }
-
-    // Hide objects that should be excluded from GTAO
-    const excludedVisibility = [];
-    for (const obj of this.gtaoExcludeObjects) {
-      excludedVisibility.push(obj.visible);
-      obj.visible = false;
-    }
-
-    // Render GTAO pass
-    gtaoPass.render(this.renderer);
-
-    // Restore visibility
-    for (let i = 0; i < this.gtaoExcludeObjects.length; i++) {
-      this.gtaoExcludeObjects[i].visible = excludedVisibility[i];
-    }
-
-    // Render remaining passes (skip GTAO pass)
-    for (const pass of this.composer.passes) {
-      if (pass.isGTAOPass) continue;
-      pass.render(this.renderer);
-    }
   }
 
   stop() {

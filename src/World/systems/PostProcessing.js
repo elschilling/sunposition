@@ -1,10 +1,7 @@
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { GTAOPass } from 'three/examples/jsm/postprocessing/GTAOPass.js'
+import { SSAOPass } from 'three/examples/jsm/postprocessing/SSAOPass.js'
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
-
-// Layer number to exclude from AO (sun path elements)
-export const AO_EXCLUDED_LAYER = 1
 
 function createPostProcessing(scene, camera, renderer) {
     const composer = new EffectComposer(renderer)
@@ -13,11 +10,13 @@ function createPostProcessing(scene, camera, renderer) {
     const renderPass = new RenderPass(scene, camera)
     composer.addPass(renderPass)
 
-    // GTAO (Ground Truth Ambient Occlusion) pass
-    const gtaoPass = new GTAOPass(scene, camera, renderer.domElement.width, renderer.domElement.height)
-    gtaoPass.output = GTAOPass.OUTPUT.Default
-    gtaoPass.enabled = false
-    composer.addPass(gtaoPass)
+    // SSGI (Screen Space Global Illumination) pass
+    const ssgiPass = new SSAOPass(scene, camera, renderer.domElement.width, renderer.domElement.height)
+    ssgiPass.kernelRadius = 3
+    ssgiPass.minDistance = 0.0008
+    ssgiPass.maxDistance = 0.1
+    ssgiPass.output = SSAOPass.OUTPUT.Default
+    composer.addPass(ssgiPass)
 
     // Output pass for color space handling
     const outputPass = new OutputPass()
@@ -25,17 +24,16 @@ function createPostProcessing(scene, camera, renderer) {
 
     return {
         composer,
-        gtaoPass,
+        ssgiPass,
         renderPass,
         outputPass,
-        AO_EXCLUDED_LAYER,
         updateSize(width, height) {
             composer.setSize(width, height)
-            gtaoPass.setSize(width, height)
+            ssgiPass.setSize(width, height)
         },
         setCamera(camera) {
             renderPass.camera = camera
-            gtaoPass.camera = camera
+            ssgiPass.camera = camera
         }
     }
 }
